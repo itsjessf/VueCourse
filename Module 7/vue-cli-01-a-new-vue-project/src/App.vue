@@ -1,8 +1,19 @@
 <template>
   <section>
     <header><h1>My Friends</h1></header>
+    <new-friend @add-friend="addFriend"> </new-friend>
     <ul>
-      <friend-contact></friend-contact>
+      <friend-contact
+        v-for="friend in friends"
+        :key="friend.id"
+        :id="friend.id"
+        :name="friend.name"
+        :phone-number="friend.phone"
+        :email-address="friend.email"
+        :is-favorite="friend.favorite"
+        @toggle-favorite="toggleFavoriteStatus"
+        @delete="deleteFriend"
+      ></friend-contact>
     </ul>
   </section>
 </template>
@@ -17,15 +28,37 @@ export default {
           name: "Manuel Pereira",
           phone: "364758",
           email: "manuel@gmail.com",
+          favorite: false,
         },
         {
           id: "marisa",
           name: "Marisa Borges",
           phone: "919673737",
           email: "mar@gmail.com",
+          favorite: true,
         },
       ],
     };
+  },
+  methods: {
+    toggleFavoriteStatus(friendId) {
+      const identifiedFriend = this.friends.find(
+        (friend) => friend.id === friendId
+      );
+      identifiedFriend.favorite = !identifiedFriend.favorite;
+    },
+    addFriend(name, phone, email) {
+      this.friends.push({
+        id: new Date().toISOString(),
+        name: name,
+        phone: phone,
+        email: email,
+        favorite: false,
+      });
+    },
+    deleteFriend(id){
+         this.friends = this.friends.filter(friend => friend.id !== id);
+    }
   },
 };
 </script>
@@ -62,7 +95,8 @@ header {
   list-style: none;
 }
 
-#app li {
+#app li,
+#app form {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   margin: 1rem auto;
   border-radius: 10px;
@@ -94,5 +128,18 @@ header {
   background-color: #ec3169;
   border-color: #ec3169;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.26);
+}
+#app input {
+  font: inherit;
+  padding: 0.15rem;
+}
+#app label {
+  font-weight: bold;
+  margin-right: 1rem;
+  width: 7rem;
+  display: inline-block;
+}
+#app form div {
+  margin: 1rem 0;
 }
 </style>
